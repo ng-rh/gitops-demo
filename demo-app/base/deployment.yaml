@@ -8,7 +8,7 @@ metadata:
     image.openshift.io/triggers: |
       [{"from":{"kind":"ImageStreamTag","name":"demo-app:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"demo-app\")].image","pause":"false"}]
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: demo-app
