@@ -3,7 +3,7 @@ const os = require('os');
 
 const HEADLINE    = 'Hello from OpenShift';
 const ENVIRONMENT = process.env.ENVIRONMENT || 'local';
-const COLOR       = process.env.COLOR || '#0b6e4f';
+const COLOR       = (process.env.COLOR && process.env.COLOR.trim()) || '#333333';
 const inCluster   = Boolean(process.env.KUBERNETES_SERVICE_HOST);
 const VERSION     = process.env.npm_package_version || '0.0.0';
 
