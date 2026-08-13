@@ -3,9 +3,15 @@ const os = require('os');
 
 const HEADLINE    = 'Hello from OpenShift';
 const ENVIRONMENT = process.env.ENVIRONMENT || 'local';
-const COLOR       = (process.env.COLOR && process.env.COLOR.trim()) || '#333333';
 const inCluster   = Boolean(process.env.KUBERNETES_SERVICE_HOST);
 const VERSION     = process.env.npm_package_version || '0.0.0';
+
+const COLORS = {
+  production: '#8a1c1c',
+  'non-prod': '#0b6e4f',
+  local:      '#1f3a5f'
+};
+const COLOR = COLORS[ENVIRONMENT] || '#333333';
 
 http.createServer((req, res) => {
   if (req.url === '/healthz') {
@@ -20,7 +26,7 @@ http.createServer((req, res) => {
   res.end(`<!DOCTYPE html><html><head><meta charset="utf-8">
     <meta http-equiv="refresh" content="5"><title>Demo App - ${ENVIRONMENT}</title></head>
     <body style="margin:0;height:100vh;display:flex;align-items:center;
-                 justify-content:center;background:${COLOR};color:#fff;
+                 justify-content:center;background-color:${COLOR};color:#ffffff;
                  font-family:Helvetica,Arial,sans-serif;text-align:center">
       <div>
         <p style="font-size:3.5rem;font-weight:800;margin:0;text-transform:uppercase;
@@ -30,4 +36,4 @@ http.createServer((req, res) => {
         ${podLine}
       </div>
     </body></html>`);
-}).listen(8080, () => console.log('listening on 8080'));
+}).listen(8080, () => console.log('listening on 8080 [' + ENVIRONMENT + ']'));
