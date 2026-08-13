@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-app-non-prod
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ng-rh/gitops-demo.git
+    targetRevision: main
+    path: demo-app/overlays/non-prod
+  destination:
+    name: non-prod-cluster
+    namespace: demo-app
+  # S2I rewrites this field to a digest after every build; without this
+  # selfHeal would revert each new image.
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/template/spec/containers/0/image
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

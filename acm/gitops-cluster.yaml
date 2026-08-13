@@ -1,0 +1,39 @@
+# Applied by hand to the HUB. Lets the hub's Argo CD reach the managed clusters.
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: default
+  namespace: openshift-gitops
+spec:
+  clusterSet: default
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: all-clusters-placement
+  namespace: openshift-gitops
+spec:
+  clusterSets:
+    - default
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: environment
+              operator: Exists
+---
+# Generates an Argo CD cluster secret for each cluster the Placement selects.
+apiVersion: apps.open-cluster-management.io/v1beta1
+kind: GitOpsCluster
+metadata:
+  name: gitops-cluster
+  namespace: openshift-gitops
+spec:
+  argoServer:
+    cluster: local-cluster
+    argoNamespace: openshift-gitops
+  placementRef:
+    apiVersion: cluster.open-cluster-management.io/v1beta1
+    kind: Placement
+    name: all-clusters-placement
+    namespace: openshift-gitops
