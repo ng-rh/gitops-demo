@@ -1,0 +1,28 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: demo-app
+  labels:
+    app: demo-app
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/ng-rh/gitops-demo.git
+      ref: main
+    contextDir: src
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/ubi9/nodejs-20:latest
+  output:
+    to:
+      kind: ImageStreamTag
+      name: demo-app:latest
+  triggers:
+    - type: ConfigChange
+  runPolicy: Serial
+  successfulBuildsHistoryLimit: 3
+  failedBuildsHistoryLimit: 3
