@@ -20,5 +20,8 @@ spec:
   # No automated block on purpose: prod stays OutOfSync until someone
   # clicks Sync. That click is the approval gate.
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
